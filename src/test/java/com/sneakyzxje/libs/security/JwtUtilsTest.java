@@ -25,6 +25,12 @@ public class JwtUtilsTest {
         String token = jwtUtils.createToken("test-user");
         System.out.println("Token generated: " + token);
         
+        String username = jwtUtils.extractUsername(token);
+        System.out.println("Extract username: " + username);
+        Assertions.assertEquals("test-user", username);
+
+        boolean isValid = jwtUtils.validateToken(token);
+        Assertions.assertTrue(isValid);
         Assertions.assertNotNull(token); 
         Assertions.assertTrue(token.length() > 20); 
     }
