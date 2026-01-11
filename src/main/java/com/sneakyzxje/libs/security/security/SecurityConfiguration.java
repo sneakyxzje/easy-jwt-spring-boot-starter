@@ -11,6 +11,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import com.sneakyzxje.libs.security.filter.JwtFilter;
 import com.sneakyzxje.libs.security.properties.SecurityProperties;
+import com.sneakyzxje.libs.security.security.exception.JwtEntryPoint;
 
 import lombok.RequiredArgsConstructor;
 
@@ -21,6 +22,7 @@ import lombok.RequiredArgsConstructor;
 public class SecurityConfiguration {
     private final SecurityProperties securityProperties;
     private final JwtFilter jwtFilter;
+    private final JwtEntryPoint jwtEntryPoint;
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         String[] publicEndpoints = securityProperties.getEndpoints().toArray(new String[0]);
@@ -30,9 +32,9 @@ public class SecurityConfiguration {
         .authorizeHttpRequests(auth -> 
             auth.requestMatchers(publicEndpoints).permitAll()
             .anyRequest().authenticated()
-        );
-
-        http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+        )
+        .exceptionHandling(exception -> exception.authenticationEntryPoint(jwtEntryPoint))
+        .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 }
