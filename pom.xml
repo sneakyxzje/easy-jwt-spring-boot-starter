@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.github.sneakyzxje</groupId> 
 	<artifactId>easy-jwt-spring-boot-starter</artifactId>
-	<version>1.0.0</version>
+	<version>1.0.1</version>
 	<name>easy-jwt-spring-boot-starter</name>
 	<description>Easy and Standardized JWT handling for Spring Boot applications</description>
 	<url/>
