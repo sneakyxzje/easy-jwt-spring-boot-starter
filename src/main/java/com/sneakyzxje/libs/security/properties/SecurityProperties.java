@@ -14,6 +14,7 @@ public class SecurityProperties {
     private List<String> endpoints = new ArrayList<>();
     private List<String> allowedOrigins = new ArrayList<>();
 
+
     public List<String> getAllowedOrigins() {
         return this.allowedOrigins;
     }
@@ -21,7 +22,7 @@ public class SecurityProperties {
     public void setAllowedOrigins(List<String> allowedOrigins) {
         this.allowedOrigins = allowedOrigins;
     }
-    
+
     public List<String> getEndpoints() {
         return this.endpoints;
     }
@@ -51,7 +52,16 @@ public class SecurityProperties {
     public static class Authentication {
         private String jwtSecret = "CHANGE-ME";
         private long jwtExpiration = 86400;
+        private long refreshTokenExpiration = 2592000;
 
+        public long getRefreshTokenExpiration() {
+            return this.refreshTokenExpiration; 
+        }
+
+        public void setRefreshTokenExpiration(long refreshTokenExpiration) {
+            this.refreshTokenExpiration = refreshTokenExpiration;
+        }
+        
         public String getJwtSecret() {
             return this.jwtSecret;
         }
