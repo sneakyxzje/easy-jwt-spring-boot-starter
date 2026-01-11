@@ -12,7 +12,16 @@ public class SecurityProperties {
     private boolean enabled = false;
     private Authentication authentication = new Authentication();
     private List<String> endpoints = new ArrayList<>();
+    private List<String> allowedOrigins = new ArrayList<>();
 
+    public List<String> getAllowedOrigins() {
+        return this.allowedOrigins;
+    }
+
+    public void setAllowedOrigins(List<String> allowedOrigins) {
+        this.allowedOrigins = allowedOrigins;
+    }
+    
     public List<String> getEndpoints() {
         return this.endpoints;
     }
