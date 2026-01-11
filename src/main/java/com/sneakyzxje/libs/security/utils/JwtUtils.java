@@ -3,6 +3,7 @@ package com.sneakyzxje.libs.security.utils;
 import java.security.Key;
 import java.util.Base64;
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.stereotype.Component;
 
@@ -32,9 +33,14 @@ public class JwtUtils {
         .getBody();
     }
 
+    public List<String> extractRoles(String token) {
+        return extractAllClaim(token).get("roles", List.class);
+    }
+
     public String extractUsername(String token) {
         return extractAllClaim(token).getSubject();
     }
+
 
     public boolean validateToken(String token) {
         try {
@@ -45,13 +51,14 @@ public class JwtUtils {
         }
     }
 
-    public String createToken(String subject) {
+    public String createToken(String subject, List<String> roles) {
         long now = System.currentTimeMillis();
         long exp = now + (securityProperties.getAuthentication().getJwtExpiration() * 1000);
         Date issuedAt = new Date(now);
         Date expiredAt = new Date(exp);
         return Jwts.builder()
         .setSubject(subject)
+        .claim("roles", roles)
         .signWith(getSigningKey(), io.jsonwebtoken.SignatureAlgorithm.HS256)
         .setIssuedAt(issuedAt)
         .setExpiration(expiredAt)
