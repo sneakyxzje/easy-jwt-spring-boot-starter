@@ -1,9 +1,12 @@
 package com.sneakyzxje.libs.security.security;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -27,12 +30,14 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @EnableConfigurationProperties(SecurityProperties.class)
 @EnableMethodSecurity
+@ComponentScan("com.sneakyzxje.libs.security") 
 public class SecurityConfiguration {
     private final SecurityProperties securityProperties;
     private final JwtFilter jwtFilter;
     private final JwtEntryPoint jwtEntryPoint;
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
     @Bean
+    @ConditionalOnMissingBean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowedOrigins(securityProperties.getAllowedOrigins());
@@ -44,12 +49,15 @@ public class SecurityConfiguration {
         source.registerCorsConfiguration("/**", config);
         return source;
     }
+
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        String[] publicEndpoints = securityProperties.getEndpoints().toArray(new String[0]);
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, CorsConfigurationSource corsConfigurationSource) throws Exception {
+        List<String> endpoints = new ArrayList<>(securityProperties.getEndpoints());
+        endpoints.add("/easy-auth/**"); 
+        String[] publicEndpoints = endpoints.toArray(new String[0]);
         http
         .csrf(csrf -> csrf.disable())
-        .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+        .cors(cors -> cors.configurationSource(corsConfigurationSource))
         .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .authorizeHttpRequests(auth -> 
             auth.requestMatchers(publicEndpoints).permitAll()
